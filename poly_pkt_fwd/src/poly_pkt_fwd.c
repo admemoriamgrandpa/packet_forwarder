@@ -96,7 +96,7 @@ Maintainer: Ruud Vlaming
 #define FETCH_SLEEP_MS		10	/* nb of ms waited when a fetch return no packets */
 #define BEACON_POLL_MS		50	/* time in ms between polling of beacon TX status */
 
-#define	PROTOCOL_VERSION	2
+#define	PROTOCOL_VERSION	1
 
 #define XERR_INIT_AVG	128		/* nb of measurements the XTAL correction is averaged on as initial value */
 #define XERR_FILT_COEF	256		/* coefficient for low-pass XTAL error tracking */
@@ -1659,7 +1659,7 @@ void thread_up(void) {
 							MSG("ERROR: [up] snprintf failed line %u\n", (__LINE__ - 4));
 							exit(EXIT_FAILURE);
 						}
-						j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"tmms\":%llu", (x->tm_hour)*3600000000000 + (x->tm_min)*60000000000 + (x->tm_sec)*1000000000 + (pkt_utc_time.tv_nsec)); /* ISO 8601 format */
+						j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"tmst\":%llu", (x->tm_hour)*3600000000000 + (x->tm_min)*60000000000 + (x->tm_sec)*1000000000 + (pkt_utc_time.tv_nsec)); /* ISO 8601 format */
 						if (j > 0) {
 							buff_index += j;
 						} else {
