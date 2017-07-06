@@ -96,7 +96,7 @@ Maintainer: Ruud Vlaming
 #define FETCH_SLEEP_MS		10	/* nb of ms waited when a fetch return no packets */
 #define BEACON_POLL_MS		50	/* time in ms between polling of beacon TX status */
 
-#define	PROTOCOL_VERSION	2
+#define	PROTOCOL_VERSION	1
 
 #define XERR_INIT_AVG	128		/* nb of measurements the XTAL correction is averaged on as initial value */
 #define XERR_FILT_COEF	256		/* coefficient for low-pass XTAL error tracking */
@@ -1634,13 +1634,13 @@ void thread_up(void) {
 			}
 			
 			/* RAW timestamp, 8-17 useful chars */
-			//j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, "\"tmst\":%u", p->count_us);
-			//if (j > 0) {
-				//buff_index += j;
-			//} else {
-				//MSG("ERROR: [up] snprintf failed line %u\n", (__LINE__ - 4));
-				//exit(EXIT_FAILURE);
-			//}
+			j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, "\"tmst\":%u", p->count_us);
+			if (j > 0) {
+				buff_index += j;
+			} else {
+				MSG("ERROR: [up] snprintf failed line %u\n", (__LINE__ - 4));
+				exit(EXIT_FAILURE);
+			}
 
 			/* Packet RX time (GPS based), 37 useful chars */
 			//TODO: From the block below only one can be exectuted, decide on the presence of GPS.
@@ -1652,13 +1652,6 @@ void thread_up(void) {
 					if (j == LGW_GPS_SUCCESS) {
 						/* split the UNIX timestamp to its calendar components */
 						x = gmtime(&(pkt_utc_time.tv_sec));
-						j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, "\"tmms\":%llu", (x->tm_hour)*3600000000000 + (x->tm_min)*60000000000 + (x->tm_sec)*1000000000 + (pkt_utc_time.tv_nsec)); /* ISO 8601 format */
-						if (j > 0) {
-							buff_index += j;
-						} else {
-							MSG("ERROR: [up] snprintf failed line %u\n", (__LINE__ - 4));
-							exit(EXIT_FAILURE);
-						}
 						j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"time\":\"%04i-%02i-%02iT%02i:%02i:%02i.%06liZ\"", (x->tm_year)+1900, (x->tm_mon)+1, x->tm_mday, x->tm_hour, x->tm_min, x->tm_sec, (pkt_utc_time.tv_nsec)/1000); /* ISO 8601 format */
 						if (j > 0) {
 							buff_index += j;
@@ -1668,12 +1661,11 @@ void thread_up(void) {
 						}
 					}
 				}
-				
-			} //else {
-				//memcpy((void *)(buff_up + buff_index), (void *)",\"time\":\"???????????????????????????\"", 37);
-				//memcpy((void *)(buff_up + buff_index + 9), (void *)fetch_timestamp, 27);
-				//buff_index += 37;
-			//}
+			} else {
+				memcpy((void *)(buff_up + buff_index), (void *)",\"time\":\"???????????????????????????\"", 37);
+				memcpy((void *)(buff_up + buff_index + 9), (void *)fetch_timestamp, 27);
+				buff_index += 37;
+			}
 			
 			/* Packet concentrator channel, RF chain & RX frequency, 34-36 useful chars */
 			j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"chan\":%1u,\"rfch\":%1u,\"freq\":%.6lf", p->if_chain, p->rf_chain, ((double)p->freq_hz / 1e6));
