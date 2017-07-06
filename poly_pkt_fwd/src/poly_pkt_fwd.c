@@ -1665,6 +1665,7 @@ void thread_up(void) {
 						} else {
 							MSG("ERROR: [up] snprintf failed line %u\n", (__LINE__ - 4));
 							exit(EXIT_FAILURE);
+						}
 					}
 				}
 				
