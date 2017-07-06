@@ -1652,7 +1652,7 @@ void thread_up(void) {
 					if (j == LGW_GPS_SUCCESS) {
 						/* split the UNIX timestamp to its calendar components */
 						x = gmtime(&(pkt_utc_time.tv_sec));
-						j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"tmst\":%llu", (x->tm_hour)*3600000000000 + (x->tm_min)*60000000000 + (x->tm_sec)*1000000000 + (pkt_utc_time.tv_nsec)); /* ISO 8601 format */
+						j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, "\"tmst\":%llu", (x->tm_hour)*3600000000000 + (x->tm_min)*60000000000 + (x->tm_sec)*1000000000 + (pkt_utc_time.tv_nsec)); /* ISO 8601 format */
 						if (j > 0) {
 							buff_index += j;
 						} else {
