@@ -1659,7 +1659,7 @@ void thread_up(void) {
 							MSG("ERROR: [up] snprintf failed line %u\n", (__LINE__ - 4));
 							exit(EXIT_FAILURE);
 						}
-						j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"tmms\":%llu", (x->tm_hour)*36*1E11 + (x->tm_min)*6E10 + (x->tm_sec)*1E9 + (pkt_utc_time.tv_nsec)); /* ISO 8601 format */
+						j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"tmms\":%llu", (x->tm_hour)*3600000000000 + (x->tm_min)*60000000000 + (x->tm_sec)*1000000000 + (pkt_utc_time.tv_nsec)); /* ISO 8601 format */
 						if (j > 0) {
 							buff_index += j;
 						} else {
