@@ -1495,7 +1495,7 @@ void thread_up(void) {
 	struct tref local_ref; /* time reference used for UTC <-> timestamp conversion */
 	
 	/* data buffers */
-	uint16_t buff_up[TX_BUFF_SIZE]; /* buffer to compose the upstream packet */
+	uint8_t buff_up[TX_BUFF_SIZE]; /* buffer to compose the upstream packet */
 	int buff_index;
 	uint8_t buff_ack[32]; /* buffer to receive acknowledges */
 	
