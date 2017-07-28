@@ -1645,27 +1645,25 @@ void thread_up(void) {
 			/* Packet RX time (GPS based), 37 useful chars */
 			//TODO: From the block below only one can be exectuted, decide on the presence of GPS.
 			// This has not been coded well.
-			if (gps_active) {
-				if (ref_ok == true) {
-					/* convert packet timestamp to UTC absolute time */
-					j = lgw_cnt2utc(local_ref, p->count_us, &pkt_utc_time);
-					if (j == LGW_GPS_SUCCESS) {
-						/* split the UNIX timestamp to its calendar components */
-						x = gmtime(&(pkt_utc_time.tv_sec));
-						j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"time\":\"%04i-%02i-%02iT%02i:%02i:%02i.%06liZ\"", (x->tm_year)+1900, (x->tm_mon)+1, x->tm_mday, x->tm_hour, x->tm_min, x->tm_sec, (pkt_utc_time.tv_nsec)/1000); /* ISO 8601 format */
-						if (j > 0) {
-							buff_index += j;
-						} else {
-							MSG("ERROR: [up] snprintf failed line %u\n", (__LINE__ - 4));
-							exit(EXIT_FAILURE);
-						}
+			if (ref_ok == true) {
+				/* convert packet timestamp to UTC absolute time */
+				j = lgw_cnt2utc(local_ref, p->count_us, &pkt_utc_time);
+				if (j == LGW_GPS_SUCCESS) {
+					/* split the UNIX timestamp to its calendar components */
+					x = gmtime(&(pkt_utc_time.tv_sec));
+					j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"time\":\"%04i-%02i-%02iT%02i:%02i:%02i.%06liZ\"", (x->tm_year)+1900, (x->tm_mon)+1, x->tm_mday, x->tm_hour, x->tm_min, x->tm_sec, (pkt_utc_time.tv_nsec)/1000); /* ISO 8601 format */
+					if (j > 0) {
+						buff_index += j;
+					} else {
+						MSG("ERROR: [up] snprintf failed line %u\n", (__LINE__ - 4));
+						exit(EXIT_FAILURE);
 					}
 				}
-			} else {
-				memcpy((void *)(buff_up + buff_index), (void *)",\"time\":\"???????????????????????????\"", 37);
-				memcpy((void *)(buff_up + buff_index + 9), (void *)fetch_timestamp, 27);
-				buff_index += 37;
-			}
+			} //else {
+				//memcpy((void *)(buff_up + buff_index), (void *)",\"time\":\"???????????????????????????\"", 37);
+				//memcpy((void *)(buff_up + buff_index + 9), (void *)fetch_timestamp, 27);
+				//buff_index += 37;
+			//}
 			
 			/* Packet concentrator channel, RF chain & RX frequency, 34-36 useful chars */
 			j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"chan\":%1u,\"rfch\":%1u,\"freq\":%.6lf", p->if_chain, p->rf_chain, ((double)p->freq_hz / 1e6));
