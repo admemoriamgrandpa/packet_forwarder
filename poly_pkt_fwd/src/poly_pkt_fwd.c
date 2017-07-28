@@ -1495,7 +1495,7 @@ void thread_up(void) {
 	struct tref local_ref; /* time reference used for UTC <-> timestamp conversion */
 	
 	/* data buffers */
-	uint8_t buff_up[TX_BUFF_SIZE]; /* buffer to compose the upstream packet */
+	uint16_t buff_up[TX_BUFF_SIZE]; /* buffer to compose the upstream packet */
 	int buff_index;
 	uint8_t buff_ack[32]; /* buffer to receive acknowledges */
 	
@@ -1651,7 +1651,6 @@ void thread_up(void) {
 				if (j == LGW_GPS_SUCCESS) {
 					/* split the UNIX timestamp to its calendar components */
 					x = gmtime(&(pkt_utc_time.tv_sec));
-					buff_index += 5;
 					j = snprintf((char *)(buff_up + buff_index), TX_BUFF_SIZE-buff_index, ",\"time\":\"%04i-%02i-%02iT%02i:%02i:%02i.%06liZ\"", (x->tm_year)+1900, (x->tm_mon)+1, x->tm_mday, x->tm_hour, x->tm_min, x->tm_sec, (pkt_utc_time.tv_nsec)/1000); /* ISO 8601 format */
 					if (j > 0) {
 						buff_index += j;
